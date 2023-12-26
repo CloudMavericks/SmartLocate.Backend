@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.API", "src\SmartLocate.API\SmartLocate.API.csproj", "{2EAD70D2-34B3-4462-98CE-600E9A7D351C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Shared", "src\SmartLocate.Shared\SmartLocate.Shared.csproj", "{1AC9B027-A1E7-4043-9945-C6D43EF32473}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Admin", "src\SmartLocate.Admin\SmartLocate.Admin.csproj", "{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,5 +19,13 @@ Global
 		{2EAD70D2-34B3-4462-98CE-600E9A7D351C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EAD70D2-34B3-4462-98CE-600E9A7D351C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EAD70D2-34B3-4462-98CE-600E9A7D351C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AC9B027-A1E7-4043-9945-C6D43EF32473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AC9B027-A1E7-4043-9945-C6D43EF32473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AC9B027-A1E7-4043-9945-C6D43EF32473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AC9B027-A1E7-4043-9945-C6D43EF32473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
