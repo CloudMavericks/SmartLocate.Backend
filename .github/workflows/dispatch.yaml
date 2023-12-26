@@ -1,0 +1,15 @@
+﻿name: Update Submodules
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:  
+  dispatch:
+    name: Dispatch Base Repository Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch REST
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.DISPATCH_TOKEN }}" https://api.github.com/repos/CloudMavericks/20CS713-PP-I-C1/dispatches --data '{"event_type": "update_submodules"}'
