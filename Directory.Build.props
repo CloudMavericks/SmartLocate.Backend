@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <ProjectTargetFramework>net8.0</ProjectTargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Deterministic>false</Deterministic>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <OcelotVersion>22.0.1</OcelotVersion>
+        <MongoDbDriverVersion>2.23.1</MongoDbDriverVersion>
+        <SwashbuckleVersion>6.5.0</SwashbuckleVersion>
+    </PropertyGroup>
+</Project>
