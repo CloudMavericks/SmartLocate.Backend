@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>$(ProjectTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Ocelot" Version="$(OcelotVersion)" />
+    </ItemGroup>
 
 </Project>

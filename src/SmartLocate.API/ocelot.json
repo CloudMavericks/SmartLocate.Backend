@@ -1,0 +1,17 @@
+{
+  "Routes": [ 
+    {      
+      "UpstreamPathTemplate": "/buses",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamPathTemplate": "/api/buses",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 8001
+      }]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseURL": "https://localhost:8000"
+  }
+}
