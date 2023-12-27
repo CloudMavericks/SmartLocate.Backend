@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>$(ProjectTargetFramework)</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="MongoDB.Driver" Version="$(MongoDbDriverVersion)" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\SmartLocate.Commons\SmartLocate.Commons.csproj" />
+    </ItemGroup>
+
+</Project>
