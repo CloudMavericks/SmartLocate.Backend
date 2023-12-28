@@ -4,38 +4,38 @@
       "UpstreamPathTemplate": "/buses",
       "UpstreamHttpMethod": ["GET", "POST"],
       "DownstreamPathTemplate": "/api/buses",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
-          "Port": 8001
+          "Port": 7001
       }]
     }, 
     {      
       "UpstreamPathTemplate": "/buses/{id}",
       "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
       "DownstreamPathTemplate": "/api/buses/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
-          "Port": 8001
+          "Port": 7001
       }]
     }, {
       "UpstreamPathTemplate": "/bus-routes",
       "UpstreamHttpMethod": ["GET", "POST"],
       "DownstreamPathTemplate": "/api/bus-routes",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
-        "Port": 8002
+        "Port": 7002
       }]
     }, {
       "UpstreamPathTemplate": "/bus-routes/{id}",
       "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
       "DownstreamPathTemplate": "/api/bus-routes/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
-        "Port": 8002
+        "Port": 7002
       }]
     }
   ],
