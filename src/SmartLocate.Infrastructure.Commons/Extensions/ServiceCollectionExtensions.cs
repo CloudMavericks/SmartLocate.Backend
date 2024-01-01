@@ -1,5 +1,7 @@
-using Microsoft.Extensions.Configuration;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using SmartLocate.Commons.Extensions;
 using SmartLocate.Infrastructure.Commons.Contracts;
@@ -9,17 +11,6 @@ namespace SmartLocate.Infrastructure.Commons.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddMongo(this IServiceCollection services, IConfiguration configuration)
-    {
-        return services.AddSingleton(_ =>
-        {
-            var connectionString = configuration.GetConnectionString("MongoDbConnection");
-            var mongoUrl = new MongoUrl(connectionString);
-            var client = new MongoClient(mongoUrl);
-            return client.GetDatabase(mongoUrl.DatabaseName);
-        });
-    }
-    
     public static IServiceCollection AddMongoRepository<T>(this IServiceCollection services) where T : class, IEntity
     {
         return services.AddSingleton<IMongoRepository<T>>(provider =>
@@ -27,5 +18,25 @@ public static class ServiceCollectionExtensions
             var mongoDatabase = provider.GetRequiredService<IMongoDatabase>();
             return new MongoRepository<T>(mongoDatabase, typeof(T).GetCollectionName());
         });
-    } 
+    }
+
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
+    {
+        var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+        if(string.IsNullOrEmpty(jwtSecret))
+            throw new Exception("JWT_SECRET environment variable is not set");
+        services.AddAuthentication()
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
+            {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
+                };
+            });
+        return services;
+    }
 }
