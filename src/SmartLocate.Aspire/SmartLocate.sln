@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.0.0
+MinimumVisualStudioVersion = 17.8.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLocate.AppHost", "SmartLocate.AppHost\SmartLocate.AppHost.csproj", "{B0191BEE-E2E6-4AAA-9E6E-872E7B2846E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartLocate.ServiceDefaults", "SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj", "{43349625-2D57-4162-B82E-BB9BBDBDFC61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0191BEE-E2E6-4AAA-9E6E-872E7B2846E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0191BEE-E2E6-4AAA-9E6E-872E7B2846E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0191BEE-E2E6-4AAA-9E6E-872E7B2846E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0191BEE-E2E6-4AAA-9E6E-872E7B2846E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43349625-2D57-4162-B82E-BB9BBDBDFC61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43349625-2D57-4162-B82E-BB9BBDBDFC61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43349625-2D57-4162-B82E-BB9BBDBDFC61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43349625-2D57-4162-B82E-BB9BBDBDFC61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D8C50F27-7048-461D-865F-8A73401A00F3}
+	EndGlobalSection
+EndGlobal

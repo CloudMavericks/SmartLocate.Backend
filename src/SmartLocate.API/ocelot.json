@@ -8,7 +8,11 @@
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
           "Port": 7001
-      }]
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Bus"
     }, 
     {      
       "UpstreamPathTemplate": "/buses/{id}",
@@ -18,7 +22,11 @@
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
           "Port": 7001
-      }]
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Bus"
     }, {
       "UpstreamPathTemplate": "/bus-routes",
       "UpstreamHttpMethod": ["GET", "POST"],
@@ -27,7 +35,11 @@
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
         "Port": 7002
-      }]
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "BusRoute"
     }, {
       "UpstreamPathTemplate": "/bus-routes/{id}",
       "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
@@ -36,10 +48,114 @@
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
         "Port": 7002
-      }]
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "BusRoute"
+    }, {
+      "UpstreamPathTemplate": "/students",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamPathTemplate": "/api/students",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7003
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Student"
+    }, {
+      "UpstreamPathTemplate": "/students/{id}",
+      "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
+      "DownstreamPathTemplate": "/api/students/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 7003
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Student"
+    }, {
+      "UpstreamPathTemplate": "/students/{id}/activation-status",
+      "UpstreamHttpMethod": ["GET"],
+      "DownstreamPathTemplate": "/api/students/{id}/activation-status",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 7003
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "Student"
+    }, {
+      "UpstreamPathTemplate": "/identity/students/login",
+      "UpstreamHttpMethod": ["POST"],
+      "DownstreamPathTemplate": "/api/identity/students/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Identity"
+    }, {
+      "UpstreamPathTemplate": "/identity/students/activation/request",
+      "UpstreamHttpMethod": ["POST"],
+      "DownstreamPathTemplate": "/api/identity/students/activation/request",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Identity"
+    }, {
+      "UpstreamPathTemplate": "/identity/students/activation/activate",
+      "UpstreamHttpMethod": ["POST"],
+      "DownstreamPathTemplate": "/api/identity/students/activation/activate",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Identity"
     }
   ],
   "GlobalConfiguration": {
-    "BaseURL": "https://localhost:8000"
-  }
+    "BaseURL": "http://localhost:7000"
+  },
+  "SwaggerEndpoints": [
+    {
+      "Key": "Bus",
+      "Config": [{
+        "Name": "Bus API",
+        "Version": "v1",
+        "Url": "http://localhost:7001/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "BusRoute",
+      "Config": [{
+        "Name": "Bus Route API",
+        "Version": "v1",
+        "Url": "http://localhost:7002/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "Student",
+      "Config": [{
+        "Name": "Student API",
+        "Version": "v1",
+        "Url": "http://localhost:7003/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "Identity",
+      "Config": [{
+        "Name": "Identity API",
+        "Version": "v1",
+        "Url": "http://localhost:7004/swagger/v1/swagger.json"
+      }]
+    }
+  ]
 }
