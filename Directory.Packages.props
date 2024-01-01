@@ -3,7 +3,19 @@
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
     <ItemGroup Label=".NET 8">
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+        <PackageVersion Include="Aspire.Hosting" Version="8.0.0-preview.2.23619.3" /> 
+        <PackageVersion Include="Aspire.Hosting.Dapr" Version="8.0.0-preview.2.23619.3" />
+        <PackageVersion Include="Aspire.MongoDB.Driver" Version="8.0.0-preview.2.23619.3" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />        
+        <PackageVersion Include="Dapr.Client" Version="1.12.0" />
+        <PackageVersion Include="Dapr.AspNetCore" Version="1.12.0" />
+        <PackageVersion Include="MailKit" Version="4.3.0" />
+        <PackageVersion Include="MMLib.SwaggerForOcelot" Version="8.1.0" />
+        <PackageVersion Include="MongoDB.Driver" Version="2.23.1" />
+        <PackageVersion Include="Ocelot" Version="22.0.1" />
+        <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
     </ItemGroup>
 </Project>
