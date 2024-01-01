@@ -1,8 +1,10 @@
+using SmartLocate.Commons.Attributes;
 using SmartLocate.Commons.Models;
 using SmartLocate.Infrastructure.Commons.Contracts;
 
 namespace SmartLocate.BusRoutes.Entities;
 
+[Collection("BusRoutes")]
 public class BusRoute : IEntity
 {
     public Guid Id { get; set; }

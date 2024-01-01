@@ -1,14 +1,19 @@
 using System.Linq.Expressions;
+using System.Net;
+using Dapr.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartLocate.BusRoutes.Contracts;
 using SmartLocate.BusRoutes.Entities;
+using SmartLocate.Commons.Constants;
 using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.BusRoutes.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/bus-routes")]
-public class BusRouteController(IMongoRepository<BusRoute> mongoRepository) : ControllerBase
+public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, DaprClient daprClient) : ControllerBase
 {
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(BusRouteResponse), StatusCodes.Status200OK)]
@@ -85,6 +90,27 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository) : Co
         if (busRoute == null)
         {
             return NotFound();
+        }
+        try
+        {
+            var students = await daprClient.InvokeMethodAsync<List<dynamic>>(HttpMethod.Get, SmartLocateServices.Students,
+                $"api/students?defaultBusRouteId={id}");
+            if (students.Count != 0)
+            {
+                return BadRequest("There are one or more students assigned to this bus route.");
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            return e.StatusCode switch
+            {
+                HttpStatusCode.NotFound => NotFound("Invalid Bus Route Selected"),
+                _ => BadRequest(e.Message)
+            };
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
         }
         await mongoRepository.RemoveAsync(id);
         return NoContent();
