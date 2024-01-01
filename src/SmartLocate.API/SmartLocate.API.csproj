@@ -5,8 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     
+    <ItemGroup>        
+        <PackageReference Include="MMLib.SwaggerForOcelot" />
+        <PackageReference Include="Ocelot" />
+    </ItemGroup>
+    
     <ItemGroup>
-        <PackageReference Include="Ocelot" Version="$(OcelotVersion)" />
+        <ProjectReference Include="..\SmartLocate.Aspire\SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
     </ItemGroup>
 
 </Project>
