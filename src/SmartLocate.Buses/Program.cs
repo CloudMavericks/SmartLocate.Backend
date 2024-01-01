@@ -4,13 +4,25 @@ using SmartLocate.Infrastructure.Commons.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddMongo(builder.Configuration)
-    .AddMongoRepository<Bus>();
+builder.AddServiceDefaults();
 
-builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 
-builder.Services.AddSwaggerGen(x => x.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartLocate.Buses", Version = "v1" }));
+builder.AddMongoDBClient("MongoDbConnection");
+
+builder.Services.AddMongoRepository<Bus>();
+
+builder.Services.AddJwtAuthentication();
+
+builder.Services.AddDaprClient();
+
+builder.Services.AddControllers().AddDapr();
+
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartLocate.Buses", Version = "v1" });
+    x.AddSecurityDefinitionAndRequirement();
+});
 
 var app = builder.Build();
 
@@ -20,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

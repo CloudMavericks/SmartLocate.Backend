@@ -3,13 +3,20 @@
     <PropertyGroup>
         <TargetFramework>$(ProjectTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled</ContainerBaseImage>
+        <ContainerRepository>smartlocate-buses</ContainerRepository>
+        <ContainerImageTag>latest</ContainerImageTag>
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleVersion)" />
+        <PackageReference Include="Aspire.MongoDB.Driver" />
+        <PackageReference Include="Dapr.Client" />
+        <PackageReference Include="Dapr.AspNetCore" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
     
     <ItemGroup>
+        <ProjectReference Include="..\SmartLocate.Aspire\SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj" />
         <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
     </ItemGroup>
 

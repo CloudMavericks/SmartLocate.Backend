@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartLocate.Buses.Contracts;
 using SmartLocate.Buses.Entities;
@@ -6,6 +7,7 @@ using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.Buses.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/buses")]
 public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBase
