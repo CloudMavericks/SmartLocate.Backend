@@ -19,6 +19,11 @@ public class MongoRepository<T>(IMongoDatabase mongoDatabase, string collectionN
     {
         return _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
     }
+    
+    public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter)
+    {
+        return _collection.Find(filter).FirstOrDefaultAsync();
+    }
 
     public Task<List<T>> GetAllAsync()
     {

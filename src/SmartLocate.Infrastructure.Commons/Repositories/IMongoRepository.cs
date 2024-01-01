@@ -8,6 +8,8 @@ public interface IMongoRepository<T> where T : class
     
     Task<T> GetAsync(Guid id);
     
+    Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter);
+    
     Task<List<T>> GetAllAsync();
     
     Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter);
