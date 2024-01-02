@@ -7,7 +7,6 @@ using SmartLocate.Infrastructure.Services;
 
 namespace SmartLocate.Infrastructure.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/infrastructure/email")]
 public class EmailController(IEmailService emailService) : ControllerBase

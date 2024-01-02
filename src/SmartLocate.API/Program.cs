@@ -34,14 +34,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwaggerForOcelotUI(x =>
-{
-    x.DownstreamSwaggerHeaders = new[]
-    {
-        new KeyValuePair<string, string>("Content-Type", "application/json"),
-        new KeyValuePair<string, string>("Authorization", "Bearer {token}")
-    };
-});
+app.UseSwaggerForOcelotUI();
 
 await app.UseOcelot();
 

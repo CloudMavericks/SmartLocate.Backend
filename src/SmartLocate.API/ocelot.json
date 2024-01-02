@@ -103,19 +103,9 @@
       }],
       "SwaggerKey": "Identity"
     }, {
-      "UpstreamPathTemplate": "/identity/students/activation/request",
+      "UpstreamPathTemplate": "/identity/students/activation/{everything}",
       "UpstreamHttpMethod": ["POST"],
-      "DownstreamPathTemplate": "/api/identity/students/activation/request",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [{
-          "Host": "localhost",
-          "Port": 7004
-      }],
-      "SwaggerKey": "Identity"
-    }, {
-      "UpstreamPathTemplate": "/identity/students/activation/activate",
-      "UpstreamHttpMethod": ["POST"],
-      "DownstreamPathTemplate": "/api/identity/students/activation/activate",
+      "DownstreamPathTemplate": "/api/identity/students/activation/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",

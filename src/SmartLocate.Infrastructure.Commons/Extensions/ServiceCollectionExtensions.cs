@@ -1,8 +1,10 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using SmartLocate.Commons.Constants;
 using SmartLocate.Commons.Extensions;
 using SmartLocate.Infrastructure.Commons.Contracts;
 using SmartLocate.Infrastructure.Commons.Repositories;
@@ -37,6 +39,11 @@ public static class ServiceCollectionExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
                 };
             });
+        services.AddAuthorizationBuilder()
+            .AddPolicy(SmartLocateRoles.Admin, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.Admin))
+            .AddPolicy(SmartLocateRoles.Student, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.Student))
+            .AddPolicy(SmartLocateRoles.BusDriver, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.BusDriver))
+            .SetDefaultPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
         return services;
     }
 }

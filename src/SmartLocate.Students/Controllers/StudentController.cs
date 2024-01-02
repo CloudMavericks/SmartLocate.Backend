@@ -18,6 +18,7 @@ namespace SmartLocate.Students.Controllers;
 [Route("api/students")]
 public class StudentController(IMongoRepository<Student> mongoRepository, DaprClient daprClient) : ControllerBase
 {
+    [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -35,6 +36,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return Ok(studentResponse);
     }
 
+    [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<StudentResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
@@ -81,6 +83,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return Ok(studentResponses);
     }
     
+    [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpPost]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status201Created)]
     public async Task<IActionResult> Post(CreateStudentRequest studentRequest)
@@ -131,6 +134,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return CreatedAtAction(nameof(Get), new { id = student.Id }, response);
     }
     
+    [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -183,6 +187,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return NoContent();
     }
 
+    [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -197,6 +202,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return NoContent();
     }
     
+    [AllowAnonymous]
     [HttpGet("{id:guid}/activation-status")]
     [ProducesResponseType(typeof(ActivationStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -211,6 +217,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return Ok(response);
     }
     
+    [AllowAnonymous]
     [Topic(SmartLocateComponents.PubSub, SmartLocateTopics.StudentActivated)]
     [HttpPost("activate")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
