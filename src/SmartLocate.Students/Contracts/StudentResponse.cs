@@ -10,7 +10,8 @@ public record StudentResponse(
     string Address,
     Point DefaultPickupDropOffLocation,
     Guid DefaultBusRouteId,
-    int DefaultBusRouteNumber)
+    int DefaultBusRouteNumber,
+    bool IsActivated)
 {
     public override string ToString()
     {

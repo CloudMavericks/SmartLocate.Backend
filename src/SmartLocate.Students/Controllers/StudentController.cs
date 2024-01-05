@@ -32,7 +32,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
 
         var studentResponse = new StudentResponse(student.Id, student.Name, student.Email, student.PhoneNumber,
             student.Address, student.DefaultPickupDropOffLocation, student.DefaultBusRouteId,
-            student.DefaultBusRouteNumber);
+            student.DefaultBusRouteNumber, student.IsActivated);
         return Ok(studentResponse);
     }
 
@@ -79,13 +79,14 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         var studentResponses = students.Select(student => new StudentResponse(student.Id, student.Name, student.Email,
             student.PhoneNumber,
             student.Address, student.DefaultPickupDropOffLocation, student.DefaultBusRouteId,
-            student.DefaultBusRouteNumber)).ToList();
+            student.DefaultBusRouteNumber, student.IsActivated)).ToList();
         return Ok(studentResponses);
     }
     
     [Authorize(Roles = SmartLocateRoles.Admin)]
     [HttpPost]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(CreateStudentRequest studentRequest)
     {
         var student = new Student
@@ -130,7 +131,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         await mongoRepository.CreateAsync(student);
         var response = new StudentResponse(student.Id, student.Name, student.Email, student.PhoneNumber,
             student.Address, student.DefaultPickupDropOffLocation, student.DefaultBusRouteId,
-            student.DefaultBusRouteNumber);
+            student.DefaultBusRouteNumber, student.IsActivated);
         return CreatedAtAction(nameof(Get), new { id = student.Id }, response);
     }
     
