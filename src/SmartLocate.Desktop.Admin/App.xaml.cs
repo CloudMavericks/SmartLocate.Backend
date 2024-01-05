@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SmartLocate.Admin
+namespace SmartLocate.Desktop.Admin
 {
     /// <summary>
     /// Interaction logic for App.xaml

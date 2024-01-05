@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SmartLocate.Admin
+namespace SmartLocate.Desktop.Admin
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
