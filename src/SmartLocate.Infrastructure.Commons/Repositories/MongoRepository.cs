@@ -74,4 +74,14 @@ public class MongoRepository<T>(IMongoDatabase mongoDatabase, string collectionN
     {
         return _collection.DeleteOneAsync(x => x.Id == id);
     }
+
+    public Task<long> CountAsync()
+    {
+        return _collection.CountDocumentsAsync(x => true);
+    }
+
+    public Task<long> CountAsync(Expression<Func<T, bool>> filter)
+    {
+        return _collection.CountDocumentsAsync(filter);
+    }
 }

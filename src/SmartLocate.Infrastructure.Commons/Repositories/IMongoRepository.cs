@@ -21,4 +21,8 @@ public interface IMongoRepository<T> where T : class
     Task UpdateAsync(T entity);
     
     Task RemoveAsync(Guid id);
+    
+    Task<long> CountAsync();
+    
+    Task<long> CountAsync(Expression<Func<T, bool>> filter);
 }
