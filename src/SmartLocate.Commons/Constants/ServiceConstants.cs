@@ -12,5 +12,9 @@ public static class SmartLocateServices
     
     public const string Identity = "identity";
     
+    public const string BusDrivers = "busdrivers";
+    
+    public const string AdminUsers = "adminusers";
+    
     public const string Infrastructure = "infrastructure";
 }
