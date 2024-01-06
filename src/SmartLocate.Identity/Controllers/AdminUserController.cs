@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SmartLocate.Commons.Constants;
 using SmartLocate.Identity.Contracts;
+using SmartLocate.Identity.Entities;
 using SmartLocate.Identity.Helpers;
 using SmartLocate.Identity.Settings;
+using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.Identity.Controllers;
 
 [AllowAnonymous]
 [ApiController]
 [Route("api/identity/admin-users")]
-public class AdminUserController(DaprClient daprClient) : ControllerBase
+public class AdminUserController(DaprClient daprClient, IMongoRepository<AdminUserRefreshToken> mongoRepository) : ControllerBase
 {
     [HttpPost("login")]
     [ProducesResponseType(typeof(AdminLoginResponse), StatusCodes.Status200OK)]
@@ -42,14 +44,35 @@ public class AdminUserController(DaprClient daprClient) : ControllerBase
             };
             
             var secret = jwtSettings.Value.Secret;
-            var token = JwtHelper.GenerateJwtToken(secret, DateTime.UtcNow.AddDays(4), claims);
-            var refreshToken = JwtHelper.GenerateRefreshToken();
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var tokenString = JwtHelper.GenerateJwtToken(secret, expiresAtDate, claims);
+            var refreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            var existingRefreshToken = await mongoRepository.FirstOrDefaultAsync(x => x.AdminUserId == response.Id);
+            if (existingRefreshToken is not null)
+            {
+                existingRefreshToken.RefreshToken = refreshTokenString;
+                existingRefreshToken.CreatedAt = createdAtDate;
+                existingRefreshToken.ExpiresAt = expiresAtDate;
+                await mongoRepository.UpdateAsync(existingRefreshToken);
+            }
+            else
+            {
+                await mongoRepository.CreateAsync(new AdminUserRefreshToken
+                {
+                    AdminUserId = response.Id.GetValueOrDefault(),
+                    RefreshToken = refreshTokenString,
+                    CreatedAt = createdAtDate,
+                    ExpiresAt = expiresAtDate
+                });
+            }
             
             var tokenResponse = new AdminLoginResponse
             {
-                Token = token,
-                RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(4)
+                Token = tokenString,
+                RefreshToken = refreshTokenString,
+                ExpiresAt = expiresAtDate
             };
             
             return Ok(tokenResponse);
@@ -57,6 +80,51 @@ public class AdminUserController(DaprClient daprClient) : ControllerBase
         catch (HttpRequestException e)
         {
             return e.StatusCode is HttpStatusCode.NotFound ? NotFound(e.Message) : BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(AdminLoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RefreshToken(AdminRefreshTokenRequest refreshTokenRequest, 
+        [FromServices] IOptions<JwtSettings> jwtSettings)
+    {
+        try
+        {
+            var secret = jwtSettings.Value.Secret;
+            var claimsPrincipal = JwtHelper.GetPrincipalFromToken(refreshTokenRequest.Token, secret);
+            var userId = Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == SmartLocateClaimTypes.AdminId).Value);
+            
+            var existingRefreshToken = await mongoRepository.FirstOrDefaultAsync(x => x.AdminUserId == userId);
+            if (existingRefreshToken is null 
+                || existingRefreshToken.RefreshToken != refreshTokenRequest.RefreshToken
+                || existingRefreshToken.ExpiresAt <= DateTime.UtcNow)
+            {
+                return BadRequest("Invalid Refresh Token. Please login again");
+            }
+            
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var token = JwtHelper.GenerateJwtToken(secret, expiresAtDate, claimsPrincipal.Claims);
+            var newRefreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            existingRefreshToken.RefreshToken = newRefreshTokenString;
+            existingRefreshToken.CreatedAt = createdAtDate;
+            existingRefreshToken.ExpiresAt = expiresAtDate;
+            await mongoRepository.UpdateAsync(existingRefreshToken);
+            
+            var tokenResponse = new AdminLoginResponse
+            {
+                Token = token,
+                RefreshToken = newRefreshTokenString,
+                ExpiresAt = expiresAtDate
+            };
+            
+            return Ok(tokenResponse);
         }
         catch (Exception e)
         {

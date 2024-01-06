@@ -120,9 +120,9 @@
       }],
       "SwaggerKey": "Identity"
     }, {
-      "UpstreamPathTemplate": "/identity/admin-users/login",
+      "UpstreamPathTemplate": "/identity/admin-users/{everything}",
       "UpstreamHttpMethod": ["POST"],
-      "DownstreamPathTemplate": "/api/identity/admin-users/login",
+      "DownstreamPathTemplate": "/api/identity/admin-users/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
