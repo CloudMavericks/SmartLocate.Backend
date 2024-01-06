@@ -16,7 +16,7 @@ namespace SmartLocate.BusDrivers.Controllers;
 [ApiController]
 public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : ControllerBase
 {
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(BusDriverResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -32,7 +32,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
         return Ok(response);
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<BusDriverResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
@@ -60,7 +60,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
         return Ok(busDriverResponses);
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpPost]
     [ProducesResponseType(typeof(BusDriverResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -78,7 +78,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
         return CreatedAtAction(nameof(Get), new {id = busDriver.Id}, response);
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,7 +100,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
         return NoContent();
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

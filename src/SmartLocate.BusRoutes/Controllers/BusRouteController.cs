@@ -10,7 +10,7 @@ using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.BusRoutes.Controllers;
 
-[Authorize(Roles = SmartLocateRoles.Admin)]
+[Authorize(Policy = SmartLocateRoles.Admin)]
 [ApiController]
 [Route("api/bus-routes")]
 public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, DaprClient daprClient) : ControllerBase
