@@ -1,5 +1,6 @@
 {
   "Routes": [ 
+    /** Buses **/
     {      
       "UpstreamPathTemplate": "/buses",
       "UpstreamHttpMethod": ["GET", "POST"],
@@ -27,7 +28,9 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "SwaggerKey": "Bus"
-    }, {
+    },
+    /** Bus Routes **/
+    {
       "UpstreamPathTemplate": "/bus-routes",
       "UpstreamHttpMethod": ["GET", "POST"],
       "DownstreamPathTemplate": "/api/bus-routes",
@@ -53,7 +56,9 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "SwaggerKey": "BusRoute"
-    }, {
+    },
+    /** Students **/
+    {
       "UpstreamPathTemplate": "/students",
       "UpstreamHttpMethod": ["GET", "POST"],
       "DownstreamPathTemplate": "/api/students",
@@ -92,10 +97,12 @@
         "AuthenticationProviderKey": "Bearer"
       },
       "SwaggerKey": "Student"
-    }, {
-      "UpstreamPathTemplate": "/identity/students/login",
+    },
+    /** Identity **/
+    {
+      "UpstreamPathTemplate": "/identity/students/{everything}",
       "UpstreamHttpMethod": ["POST"],
-      "DownstreamPathTemplate": "/api/identity/students/login",
+      "DownstreamPathTemplate": "/api/identity/students/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
@@ -103,15 +110,107 @@
       }],
       "SwaggerKey": "Identity"
     }, {
-      "UpstreamPathTemplate": "/identity/students/activation/{everything}",
+      "UpstreamPathTemplate": "/identity/bus-drivers/{everything}",
       "UpstreamHttpMethod": ["POST"],
-      "DownstreamPathTemplate": "/api/identity/students/activation/{everything}",
+      "DownstreamPathTemplate": "/api/identity/bus-drivers/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
           "Port": 7004
       }],
       "SwaggerKey": "Identity"
+    }, {
+      "UpstreamPathTemplate": "/identity/admin-users/login",
+      "UpstreamHttpMethod": ["POST"],
+      "DownstreamPathTemplate": "/api/identity/admin-users/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 7004
+      }],
+      "SwaggerKey": "Identity"
+    },
+    /** Bus Drivers **/
+    {
+      "UpstreamPathTemplate": "/bus-drivers",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamPathTemplate": "/api/bus-drivers",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7005
+      }],
+      "SwaggerKey": "BusDriver",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }, {
+      "UpstreamPathTemplate": "/bus-drivers/{id}",
+      "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
+      "DownstreamPathTemplate": "/api/bus-drivers/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7005
+      }],
+      "SwaggerKey": "BusDriver",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }, {
+      "UpstreamPathTemplate": "/bus-drivers/{id}/activation-status",
+      "UpstreamHttpMethod": ["GET"],
+      "DownstreamPathTemplate": "/api/bus-drivers/{id}/activation-status",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7005
+      }],
+      "SwaggerKey": "BusDriver",
+      "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    /** Admin Users **/
+    {
+      "UpstreamPathTemplate": "/admin-users",
+      "UpstreamHttpMethod": ["GET", "POST"],
+      "DownstreamPathTemplate": "/api/admin",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Admin",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }, {
+      "UpstreamPathTemplate": "/admin-users/{id}",
+      "UpstreamHttpMethod": ["GET", "PUT", "DELETE"],
+      "DownstreamPathTemplate": "/api/admin/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Admin",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }  
+    }, {
+      "UpstreamPathTemplate": "/admin-users/{id}/activation-status",
+      "UpstreamHttpMethod": ["GET"],
+      "DownstreamPathTemplate": "/api/admin/{id}/activation-status",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7004
+      }],
+      "SwaggerKey": "Admin",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     }
   ],
   "GlobalConfiguration": {
@@ -145,6 +244,20 @@
         "Name": "Identity API",
         "Version": "v1",
         "Url": "http://localhost:7004/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "BusDriver",
+      "Config": [{
+        "Name": "Bus Driver API",
+        "Version": "v1",
+        "Url": "http://localhost:7005/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "Admin",
+      "Config": [{
+        "Name": "Admin API",
+        "Version": "v1",
+        "Url": "http://localhost:7006/swagger/v1/swagger.json"
       }]
     }
   ]
