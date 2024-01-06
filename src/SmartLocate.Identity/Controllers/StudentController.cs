@@ -14,7 +14,8 @@ namespace SmartLocate.Identity.Controllers;
 
 [ApiController]
 [Route("api/identity/students")]
-public class StudentController(IMongoRepository<StudentActivationCode> mongoRepository, DaprClient daprClient) : ControllerBase
+public class StudentController(IMongoRepository<StudentActivationCode> activationCodeRepository, 
+    IMongoRepository<StudentRefreshToken> refreshTokenRepository, DaprClient daprClient) : ControllerBase
 {
     private readonly Random _random = new();
     
@@ -33,12 +34,12 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
         
         var activationCode = _random.Next(1000, 9999);
         
-        var existingActivationCode = await mongoRepository.FirstOrDefaultAsync(x => x.StudentId == request.StudentId);
+        var existingActivationCode = await activationCodeRepository.FirstOrDefaultAsync(x => x.StudentId == request.StudentId);
         if (existingActivationCode != null)
         {
             existingActivationCode.ActivationCode = activationCode;
             existingActivationCode.CreatedAt = DateTime.UtcNow;
-            await mongoRepository.UpdateAsync(existingActivationCode);
+            await activationCodeRepository.UpdateAsync(existingActivationCode);
         }
         else
         {
@@ -48,7 +49,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
                 ActivationCode = activationCode,
                 CreatedAt = DateTime.UtcNow
             };
-            await mongoRepository.CreateAsync(newActivationCode);
+            await activationCodeRepository.CreateAsync(newActivationCode);
         }
         
         await daprClient.PublishEventAsync(SmartLocateComponents.PubSub, SmartLocateTopics.SendMail,
@@ -68,7 +69,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Activate(StudentActivateRequest request)
     {
-        var activationCode = await mongoRepository.FirstOrDefaultAsync(x => x.StudentId == request.StudentId);
+        var activationCode = await activationCodeRepository.FirstOrDefaultAsync(x => x.StudentId == request.StudentId);
         if (activationCode == null)
         {
             return NotFound("Activation Code Not Found");
@@ -79,7 +80,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
         }
         if (activationCode.CreatedAt.AddMinutes(5) < DateTime.UtcNow)
         {
-            await mongoRepository.RemoveAsync(activationCode.Id);
+            await activationCodeRepository.RemoveAsync(activationCode.Id);
             return BadRequest("Activation Code expired");
         }
         if (request.Password != request.ConfirmPassword)
@@ -97,7 +98,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
             request.Password
         });
         
-        await mongoRepository.RemoveAsync(activationCode.Id);
+        await activationCodeRepository.RemoveAsync(activationCode.Id);
         
         return Accepted("Activation Code Accepted");
     }
@@ -128,14 +129,35 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
             };
             
             var secret = jwtSettings.Value.Secret;
-            var token = JwtHelper.GenerateJwtToken(secret, DateTime.UtcNow.AddDays(4), claims);
-            var refreshToken = JwtHelper.GenerateRefreshToken();
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var tokenString = JwtHelper.GenerateJwtToken(secret, expiresAtDate, claims);
+            var refreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            var existingRefreshToken = await refreshTokenRepository.FirstOrDefaultAsync(x => x.StudentId == response.Id);
+            if (existingRefreshToken is not null)
+            {
+                existingRefreshToken.RefreshToken = refreshTokenString;
+                existingRefreshToken.CreatedAt = createdAtDate;
+                existingRefreshToken.ExpiresAt = expiresAtDate;
+                await refreshTokenRepository.UpdateAsync(existingRefreshToken);
+            }
+            else
+            {
+                await refreshTokenRepository.CreateAsync(new StudentRefreshToken
+                {
+                    StudentId = response.Id.GetValueOrDefault(),
+                    RefreshToken = refreshTokenString,
+                    CreatedAt = createdAtDate,
+                    ExpiresAt = expiresAtDate
+                });
+            }
             
             var tokenResponse = new StudentLoginResponse
             {
-                Token = token,
-                RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(4)
+                Token = tokenString,
+                RefreshToken = refreshTokenString,
+                ExpiresAt = expiresAtDate
             };
             
             return Ok(tokenResponse);
@@ -143,6 +165,51 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
         catch (HttpRequestException e)
         {
             return e.StatusCode is HttpStatusCode.NotFound ? NotFound(e.Message) : BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(StudentLoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RefreshToken(StudentRefreshTokenRequest request, 
+        [FromServices] IOptions<JwtSettings> jwtSettings)
+    {
+        try
+        {
+            var secret = jwtSettings.Value.Secret;
+            var claimsPrincipal = JwtHelper.GetPrincipalFromToken(request.Token, secret);
+            var studentId = Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == SmartLocateClaimTypes.StudentId).Value);
+            
+            var existingRefreshToken = await refreshTokenRepository.FirstOrDefaultAsync(x => x.StudentId == studentId);
+            if (existingRefreshToken is null 
+                || existingRefreshToken.RefreshToken != request.RefreshToken
+                || existingRefreshToken.ExpiresAt <= DateTime.UtcNow)
+            {
+                return BadRequest("Invalid Refresh Token");
+            }
+            
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var tokenString = JwtHelper.GenerateJwtToken(secret, expiresAtDate, claimsPrincipal.Claims);
+            var refreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            existingRefreshToken.RefreshToken = refreshTokenString;
+            existingRefreshToken.CreatedAt = createdAtDate;
+            existingRefreshToken.ExpiresAt = expiresAtDate;
+            await refreshTokenRepository.UpdateAsync(existingRefreshToken);
+            
+            var tokenResponse = new StudentLoginResponse
+            {
+                Token = tokenString,
+                RefreshToken = refreshTokenString,
+                ExpiresAt = expiresAtDate
+            };
+            
+            return Ok(tokenResponse);
         }
         catch (Exception e)
         {

@@ -10,7 +10,7 @@ using SmartLocate.Infrastructure.Commons.Services;
 
 namespace SmartLocate.Admin.Controllers;
 
-[Authorize(Roles = SmartLocateRoles.SuperAdmin)]
+[Authorize(Policy = SmartLocateRoles.SuperAdmin)]
 [Route("api/admin")]
 [ApiController]
 public class AdminController(IMongoRepository<AdminUser> mongoRepository, ICurrentUserService currentUserService) : ControllerBase

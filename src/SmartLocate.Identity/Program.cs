@@ -13,7 +13,10 @@ builder.AddMongoDBClient("MongoDbConnection");
 
 builder.Services
     .AddMongoRepository<StudentActivationCode>()
-    .AddMongoRepository<BusDriverActivationCode>();
+    .AddMongoRepository<BusDriverActivationCode>()
+    .AddMongoRepository<AdminUserRefreshToken>()
+    .AddMongoRepository<BusDriverRefreshToken>()
+    .AddMongoRepository<StudentRefreshToken>();
 
 builder.Services.AddJwtAuthentication();
 

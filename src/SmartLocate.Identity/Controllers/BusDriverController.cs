@@ -14,7 +14,8 @@ namespace SmartLocate.Identity.Controllers;
 
 [ApiController]
 [Route("api/identity/bus-drivers")]
-public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongoRepository, DaprClient daprClient) : ControllerBase
+public class BusDriverController(IMongoRepository<BusDriverActivationCode> activationCodeRepository, 
+    IMongoRepository<BusDriverRefreshToken> refreshTokenRepository, DaprClient daprClient) : ControllerBase
 {
     private readonly Random _random = new();
     
@@ -33,12 +34,12 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
 
         var activationCode = _random.Next(1000, 9999);
         
-        var existingActivationCode = await mongoRepository.FirstOrDefaultAsync(x => x.BusDriverId == request.BusDriverId);
+        var existingActivationCode = await activationCodeRepository.FirstOrDefaultAsync(x => x.BusDriverId == request.BusDriverId);
         if (existingActivationCode != null)
         {
             existingActivationCode.ActivationCode = activationCode;
             existingActivationCode.CreatedAt = DateTime.UtcNow;
-            await mongoRepository.UpdateAsync(existingActivationCode);
+            await activationCodeRepository.UpdateAsync(existingActivationCode);
         }
         else
         {
@@ -48,7 +49,7 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
                 ActivationCode = activationCode,
                 CreatedAt = DateTime.UtcNow
             };
-            await mongoRepository.CreateAsync(newActivationCode);
+            await activationCodeRepository.CreateAsync(newActivationCode);
         }
         
         await daprClient.PublishEventAsync(SmartLocateComponents.PubSub, SmartLocateTopics.SendSms,
@@ -74,7 +75,7 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
             return NotFound("Bus Driver Not Found");
         }
         
-        var activationCode = await mongoRepository.FirstOrDefaultAsync(x => x.BusDriverId == request.BusDriverId);
+        var activationCode = await activationCodeRepository.FirstOrDefaultAsync(x => x.BusDriverId == request.BusDriverId);
         if (activationCode == null)
         {
             return NotFound("Activation Code Not Found");
@@ -102,7 +103,7 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
                 request.Pin
             });
         
-        await mongoRepository.RemoveAsync(activationCode.Id);
+        await activationCodeRepository.RemoveAsync(activationCode.Id);
         
         return Accepted("Activation Code Accepted");
     }
@@ -131,15 +132,38 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
             };
 
             var jwtSecret = jwtSettings.Value.Secret;
-            var token = JwtHelper.GenerateJwtToken(jwtSecret, DateTime.UtcNow.AddDays(4), claims);
-            var refreshToken = JwtHelper.GenerateRefreshToken();
-
-            return Ok(new BusDriverLoginResponse
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var tokenString = JwtHelper.GenerateJwtToken(jwtSecret, expiresAtDate, claims);
+            var refreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            var existingRefreshToken = await refreshTokenRepository.FirstOrDefaultAsync(x => x.BusDriverId == response.Id);
+            if (existingRefreshToken != null)
             {
-                Token = token,
-                RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(4)
-            });
+                existingRefreshToken.RefreshToken = refreshTokenString;
+                existingRefreshToken.CreatedAt = createdAtDate;
+                existingRefreshToken.ExpiresAt = expiresAtDate;
+                await refreshTokenRepository.UpdateAsync(existingRefreshToken);
+            }
+            else
+            {
+                await refreshTokenRepository.CreateAsync(new BusDriverRefreshToken
+                {
+                    BusDriverId = response.Id.GetValueOrDefault(),
+                    RefreshToken = refreshTokenString,
+                    CreatedAt = createdAtDate,
+                    ExpiresAt = expiresAtDate
+                });
+            }
+
+            var tokenResponse = new BusDriverLoginResponse
+            {
+                Token = tokenString,
+                RefreshToken = refreshTokenString,
+                ExpiresAt = expiresAtDate
+            };
+
+            return Ok(tokenResponse);
         }
         catch (RpcException ex) when (ex.StatusCode == Grpc.Core.StatusCode.NotFound)
         {
@@ -148,6 +172,50 @@ public class BusDriverController(IMongoRepository<BusDriverActivationCode> mongo
         catch (Exception)
         {
             return BadRequest("Invalid Credentials");
+        }
+    }
+    
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(BusDriverLoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RefreshToken(BusDriverRefreshTokenRequest request, [FromServices] IOptions<JwtSettings> jwtSettings)
+    {
+        try
+        {
+            var secret = jwtSettings.Value.Secret;
+            var claimsPrincipal = JwtHelper.GetPrincipalFromToken(request.Token, secret);
+            var userId = Guid.Parse(claimsPrincipal.Claims.First(x => x.Type == SmartLocateClaimTypes.BusDriverId).Value);
+            
+            var existingRefreshToken = await refreshTokenRepository.FirstOrDefaultAsync(x => x.BusDriverId == userId);
+            if (existingRefreshToken is null 
+                || existingRefreshToken.RefreshToken != request.RefreshToken
+                || existingRefreshToken.ExpiresAt <= DateTime.UtcNow)
+            {
+                return BadRequest("Invalid Refresh Token. Please login again");
+            }
+            
+            var createdAtDate = DateTime.UtcNow;
+            var expiresAtDate = createdAtDate.AddDays(4);
+            var tokenString = JwtHelper.GenerateJwtToken(secret, expiresAtDate, claimsPrincipal.Claims);
+            var newRefreshTokenString = JwtHelper.GenerateRefreshToken();
+            
+            existingRefreshToken.RefreshToken = newRefreshTokenString;
+            existingRefreshToken.CreatedAt = createdAtDate;
+            existingRefreshToken.ExpiresAt = expiresAtDate;
+            await refreshTokenRepository.UpdateAsync(existingRefreshToken);
+            
+            var tokenResponse = new BusDriverLoginResponse
+            {
+                Token = tokenString,
+                RefreshToken = newRefreshTokenString,
+                ExpiresAt = expiresAtDate
+            };
+            
+            return Ok(tokenResponse);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
         }
     }
 }

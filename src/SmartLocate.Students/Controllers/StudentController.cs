@@ -18,7 +18,7 @@ namespace SmartLocate.Students.Controllers;
 [Route("api/students")]
 public class StudentController(IMongoRepository<Student> mongoRepository, DaprClient daprClient) : ControllerBase
 {
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,7 +36,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return Ok(studentResponse);
     }
 
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<StudentResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
@@ -83,7 +83,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return Ok(studentResponses);
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpPost]
     [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -135,7 +135,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return CreatedAtAction(nameof(Get), new { id = student.Id }, response);
     }
     
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -188,7 +188,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         return NoContent();
     }
 
-    [Authorize(Roles = SmartLocateRoles.Admin)]
+    [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
