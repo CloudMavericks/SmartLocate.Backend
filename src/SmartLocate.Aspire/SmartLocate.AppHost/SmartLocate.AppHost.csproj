@@ -14,7 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\SmartLocate.Admin\SmartLocate.Admin.csproj" />
       <ProjectReference Include="..\..\SmartLocate.API\SmartLocate.API.csproj" />
+      <ProjectReference Include="..\..\SmartLocate.BusDrivers\SmartLocate.BusDrivers.csproj" />
       <ProjectReference Include="..\..\SmartLocate.Buses\SmartLocate.Buses.csproj" />
       <ProjectReference Include="..\..\SmartLocate.BusRoutes\SmartLocate.BusRoutes.csproj" />
       <ProjectReference Include="..\..\SmartLocate.Identity\SmartLocate.Identity.csproj" />

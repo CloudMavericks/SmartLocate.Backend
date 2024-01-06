@@ -16,33 +16,49 @@ var students = builder.AddProject<Projects.SmartLocate_Students>(SmartLocateServ
 
 var identity = builder.AddProject<Projects.SmartLocate_Identity>(SmartLocateServices.Identity);
 
+var busDrivers = builder.AddProject<Projects.SmartLocate_BusDrivers>(SmartLocateServices.BusDrivers);
+
+var adminUsers = builder.AddProject<Projects.SmartLocate_Admin>(SmartLocateServices.AdminUsers);
+
 var infrastructure = builder.AddProject<Projects.SmartLocate_Infrastructure>(SmartLocateServices.Infrastructure);
 
 api.WithEnvironment("JWT_SECRET", jwtSecret);
 
-buses.WithDaprSidecar()
-    .WithEnvironment("JWT_SECRET", jwtSecret);
+buses
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
 
 busRoutes
     .WithReference(students)
-    .WithDaprSidecar()
-    .WithEnvironment("JWT_SECRET", jwtSecret);
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
 
 students
     .WithReference(busRoutes)
     .WithReference(daprPubSub)
-    .WithDaprSidecar()
-    .WithEnvironment("JWT_SECRET", jwtSecret);
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
+
+busDrivers
+    .WithReference(daprPubSub)
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
+
+adminUsers
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
 
 identity
     .WithReference(students)
+    .WithReference(busDrivers)
+    .WithReference(adminUsers)
     .WithReference(daprPubSub)
-    .WithDaprSidecar()
-    .WithEnvironment("JWT_SECRET", jwtSecret);
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
 
 infrastructure
     .WithReference(daprPubSub)
-    .WithDaprSidecar()
-    .WithEnvironment("JWT_SECRET", jwtSecret);
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
 
 await builder.Build().RunAsync();
