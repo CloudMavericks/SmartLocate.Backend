@@ -1,6 +1,5 @@
 using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,7 +16,7 @@ namespace SmartLocate.Identity.Controllers;
 [Route("api/identity/students")]
 public class StudentController(IMongoRepository<StudentActivationCode> mongoRepository, DaprClient daprClient) : ControllerBase
 {
-    private record LoginResponse(bool Succeeded, Guid? Id = null, string Name = null, string Email = null, string Phone = null);
+    private readonly Random _random = new();
     
     [HttpPost("activation/request")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -32,10 +31,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
             return NotFound("Student Not Found");
         }
         
-        var randomNumberGenerator = RandomNumberGenerator.Create();
-        var activationCodeBytes = new byte[4];
-        randomNumberGenerator.GetBytes(activationCodeBytes);
-        var activationCode = Math.Abs(BitConverter.ToInt32(activationCodeBytes));
+        var activationCode = _random.Next(1000, 9999);
         
         var existingActivationCode = await mongoRepository.FirstOrDefaultAsync(x => x.StudentId == request.StudentId);
         if (existingActivationCode != null)
@@ -108,7 +104,10 @@ public class StudentController(IMongoRepository<StudentActivationCode> mongoRepo
 
     [HttpPost("login")]
     [ProducesResponseType(typeof(StudentLoginResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login(StudentLoginRequest loginRequest, [FromServices] IOptions<JwtSettings> jwtSettings)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Login(StudentLoginRequest loginRequest, 
+        [FromServices] IOptions<JwtSettings> jwtSettings)
     {
         var request = daprClient.CreateInvokeMethodRequest(SmartLocateServices.Students, "api/students/login", loginRequest);
         try

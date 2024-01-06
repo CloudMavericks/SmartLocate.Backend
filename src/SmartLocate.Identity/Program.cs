@@ -11,7 +11,9 @@ builder.Services.AddProblemDetails();
 
 builder.AddMongoDBClient("MongoDbConnection");
 
-builder.Services.AddMongoRepository<StudentActivationCode>();
+builder.Services
+    .AddMongoRepository<StudentActivationCode>()
+    .AddMongoRepository<BusDriverActivationCode>();
 
 builder.Services.AddJwtAuthentication();
 

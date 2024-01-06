@@ -1,6 +1,6 @@
 namespace SmartLocate.Identity.Contracts;
 
-public class StudentLoginResponse
+public class BusDriverLoginResponse
 {
     public string Token { get; init; }
     
