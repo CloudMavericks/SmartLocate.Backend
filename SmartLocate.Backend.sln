@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.API", "src\SmartLocate.API\SmartLocate.API.csproj", "{2EAD70D2-34B3-4462-98CE-600E9A7D351C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Admin", "src\SmartLocate.Admin\SmartLocate.Admin.csproj", "{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Desktop.Admin", "src\SmartLocate.Desktop.Admin\SmartLocate.Desktop.Admin.csproj", "{44DA7046-4A5A-43FA-8E7A-03680ECDFAAF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{92E8224B-C288-4A6B-9B8B-A7362D5AA610}"
 EndProject
@@ -34,6 +34,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Identity", "src\SmartLocate.Identity\SmartLocate.Identity.csproj", "{B72AB1C0-41D3-41A1-B8E5-B17451BF1EE9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Infrastructure", "src\SmartLocate.Infrastructure\SmartLocate.Infrastructure.csproj", "{22697D17-A2F9-4167-B1A6-1FD4CACE86B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.BusDrivers", "src\SmartLocate.BusDrivers\SmartLocate.BusDrivers.csproj", "{5C967802-7187-4F34-8EA8-1CC753D5007A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLocate.Admin", "src\SmartLocate.Admin\SmartLocate.Admin.csproj", "{D66FE0B7-8167-4779-AAAE-2AF093F24002}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +89,14 @@ Global
 		{22697D17-A2F9-4167-B1A6-1FD4CACE86B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22697D17-A2F9-4167-B1A6-1FD4CACE86B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22697D17-A2F9-4167-B1A6-1FD4CACE86B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C967802-7187-4F34-8EA8-1CC753D5007A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C967802-7187-4F34-8EA8-1CC753D5007A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C967802-7187-4F34-8EA8-1CC753D5007A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C967802-7187-4F34-8EA8-1CC753D5007A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D66FE0B7-8167-4779-AAAE-2AF093F24002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D66FE0B7-8167-4779-AAAE-2AF093F24002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D66FE0B7-8167-4779-AAAE-2AF093F24002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D66FE0B7-8167-4779-AAAE-2AF093F24002}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{53770B0E-AB8E-4CE9-8F5B-0C7BBC1D6395} = {92E8224B-C288-4A6B-9B8B-A7362D5AA610}
@@ -98,5 +110,7 @@ Global
 		{83988FF3-1140-4821-86AB-F49BFDF03B1B} = {07A9FE1A-C797-4E0F-B912-C7B8ECCF83C6}
 		{B72AB1C0-41D3-41A1-B8E5-B17451BF1EE9} = {92E8224B-C288-4A6B-9B8B-A7362D5AA610}
 		{22697D17-A2F9-4167-B1A6-1FD4CACE86B6} = {6307F8F4-4CC0-4846-958B-1E9F989C3FD1}
+		{5C967802-7187-4F34-8EA8-1CC753D5007A} = {92E8224B-C288-4A6B-9B8B-A7362D5AA610}
+		{D66FE0B7-8167-4779-AAAE-2AF093F24002} = {92E8224B-C288-4A6B-9B8B-A7362D5AA610}
 	EndGlobalSection
 EndGlobal
