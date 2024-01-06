@@ -8,7 +8,7 @@ using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.Buses.Controllers;
 
-[Authorize(Roles = SmartLocateRoles.Admin)]
+[Authorize(Policy = SmartLocateRoles.Admin)]
 [ApiController]
 [Route("api/buses")]
 public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBase

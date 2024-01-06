@@ -48,13 +48,14 @@ public static class ServiceCollectionExtensions
                     ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
+                    RoleClaimType = SmartLocateClaimTypes.Type
                 };
             });
         services.AddAuthorizationBuilder()
-            .AddPolicy(SmartLocateRoles.SuperAdmin, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.SuperAdmin))
-            .AddPolicy(SmartLocateRoles.Admin, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.Admin, SmartLocateRoles.SuperAdmin))
-            .AddPolicy(SmartLocateRoles.Student, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.Student))
-            .AddPolicy(SmartLocateRoles.BusDriver, policy => policy.RequireClaim(SmartLocateClaimTypes.Type, SmartLocateRoles.BusDriver))
+            .AddPolicy(SmartLocateRoles.SuperAdmin, policy => policy.RequireRole(SmartLocateRoles.SuperAdmin))
+            .AddPolicy(SmartLocateRoles.Admin, policy => policy.RequireRole(SmartLocateRoles.Admin, SmartLocateRoles.SuperAdmin))
+            .AddPolicy(SmartLocateRoles.Student, policy => policy.RequireRole(SmartLocateRoles.Student))
+            .AddPolicy(SmartLocateRoles.BusDriver, policy => policy.RequireRole(SmartLocateRoles.BusDriver))
             .SetDefaultPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
         return services;
     }
