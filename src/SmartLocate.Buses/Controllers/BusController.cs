@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartLocate.Buses.Contracts;
 using SmartLocate.Buses.Entities;
 using SmartLocate.Commons.Constants;
+using SmartLocate.Infrastructure.Commons.Contracts;
 using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.Buses.Controllers;
@@ -28,7 +29,7 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
     }
     
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<BusResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResultSet<BusResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1, int pageSize = 10, string orderBy = "Id", bool orderByDescending = false)
     {
         Expression<Func<Bus, object>> orderByExpression = orderBy switch
@@ -39,8 +40,9 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
         };
         var skip = (page - 1) * pageSize;
         var buses = await mongoRepository.GetAllAsync(skip, pageSize, orderByExpression, orderByDescending);
+        var totalCount = await mongoRepository.CountAsync();
         var busResponses = buses.Select(bus => new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel)).ToList();
-        return Ok(busResponses);
+        return Ok(new ResultSet<BusResponse>(busResponses, totalCount));
     }
     
     [HttpPost]
