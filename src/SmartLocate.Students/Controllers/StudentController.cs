@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartLocate.Commons.Constants;
+using SmartLocate.Infrastructure.Commons.Contracts;
 using SmartLocate.Infrastructure.Commons.Repositories;
 using SmartLocate.Students.Contracts;
 using SmartLocate.Students.Entities;
@@ -38,7 +39,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
 
     [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<StudentResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResultSet<StudentResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
                                         int pageSize = 10,
                                         string orderBy = "Id",
@@ -76,11 +77,12 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         
         var skip = (page - 1) * pageSize;
         var students = await mongoRepository.GetAllAsync(filter, skip, pageSize, orderByExpression, orderByDescending);
+        var totalCount = await mongoRepository.CountAsync(filter);
         var studentResponses = students.Select(student => new StudentResponse(student.Id, student.Name, student.Email,
             student.PhoneNumber,
             student.Address, student.DefaultPickupDropOffLocation, student.DefaultBusRouteId,
             student.DefaultBusRouteNumber, student.IsActivated)).ToList();
-        return Ok(studentResponses);
+        return Ok(new ResultSet<StudentResponse>(studentResponses, totalCount));
     }
     
     [Authorize(Policy = SmartLocateRoles.Admin)]

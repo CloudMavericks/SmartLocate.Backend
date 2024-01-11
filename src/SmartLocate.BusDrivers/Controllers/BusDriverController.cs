@@ -7,6 +7,7 @@ using SmartLocate.BusDrivers.Contracts;
 using SmartLocate.BusDrivers.Entities;
 using SmartLocate.BusDrivers.Enums;
 using SmartLocate.Commons.Constants;
+using SmartLocate.Infrastructure.Commons.Contracts;
 using SmartLocate.Infrastructure.Commons.Repositories;
 
 namespace SmartLocate.BusDrivers.Controllers;
@@ -34,7 +35,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
     
     [Authorize(Policy = SmartLocateRoles.Admin)]
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<BusDriverResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResultSet<BusDriverResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
                                         int pageSize = 10,
                                         string orderBy = "Name",
@@ -55,9 +56,10 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
         };
         var skip = (page - 1) * pageSize;
         var busDrivers = await mongoRepository.GetAllAsync(filter, skip, pageSize, orderByExpression, orderByDescending);
+        var totalCount = await mongoRepository.CountAsync(filter);
         var busDriverResponses = busDrivers
             .Select(x => new BusDriverResponse(x.Id, x.Name, x.PhoneNumber, x.IsActivated)).ToList();
-        return Ok(busDriverResponses);
+        return Ok(new ResultSet<BusDriverResponse>(busDriverResponses, totalCount));
     }
     
     [Authorize(Policy = SmartLocateRoles.Admin)]

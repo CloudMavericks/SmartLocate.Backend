@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartLocate.Admin.Contracts;
 using SmartLocate.Admin.Entities;
 using SmartLocate.Commons.Constants;
+using SmartLocate.Infrastructure.Commons.Contracts;
 using SmartLocate.Infrastructure.Commons.Repositories;
 using SmartLocate.Infrastructure.Commons.Services;
 
@@ -31,7 +32,7 @@ public class AdminController(IMongoRepository<AdminUser> mongoRepository, ICurre
     }
     
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<AdminUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResultSet<AdminUserResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
                                         int pageSize = 10,
                                         string orderBy = "Name",
@@ -46,9 +47,10 @@ public class AdminController(IMongoRepository<AdminUser> mongoRepository, ICurre
         };
         var skip = (page - 1) * pageSize;
         var adminUsers = await mongoRepository.GetAllAsync(skip, pageSize, orderByExpression, orderByDescending);
+        var totalCount = await mongoRepository.CountAsync();
         var adminUserResponses = adminUsers
             .Select(x => new AdminUserResponse(x.Id, x.Name, x.Email, x.PhoneNumber, x.IsSuperAdmin)).ToList();
-        return Ok(adminUserResponses);
+        return Ok(new ResultSet<AdminUserResponse>(adminUserResponses, totalCount));
     }
 
     [HttpPost]
