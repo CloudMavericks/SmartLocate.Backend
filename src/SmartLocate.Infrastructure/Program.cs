@@ -13,7 +13,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameo
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddDaprClient();
 

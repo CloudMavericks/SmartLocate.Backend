@@ -18,7 +18,7 @@ builder.Services
     .AddMongoRepository<BusDriverRefreshToken>()
     .AddMongoRepository<StudentRefreshToken>();
 
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddDaprClient();
 

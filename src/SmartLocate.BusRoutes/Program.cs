@@ -12,7 +12,7 @@ builder.AddMongoDBClient("MongoDbConnection");
 
 builder.Services.AddMongoRepository<BusRoute>();
 
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddDaprClient();
 

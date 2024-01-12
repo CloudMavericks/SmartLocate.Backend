@@ -13,7 +13,7 @@ builder.AddMongoDBClient("MongoDbConnection");
 
 builder.Services.AddMongoRepository<AdminUser>();
 
-builder.Services.AddJwtAuthentication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddCurrentUserService();
 

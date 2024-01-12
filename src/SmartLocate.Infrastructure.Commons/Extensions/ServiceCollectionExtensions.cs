@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
@@ -33,10 +34,12 @@ public static class ServiceCollectionExtensions
     /// Adds Jwt Authentication services and roles based authorization policies to the service collection. 
     /// </summary>
     /// <param name="services">The service collection.</param>
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
+    /// <param name="configuration">An instance of <see cref="IConfiguration"/> from configuration provider.</param>
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-        if(string.IsNullOrEmpty(jwtSecret))
+        jwtSecret ??= configuration["JwtSettings:Secret"] ?? string.Empty;
+        if(string.IsNullOrEmpty(jwtSecret) && configuration == null)
             throw new Exception("JWT_SECRET environment variable is not set");
         services.AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
