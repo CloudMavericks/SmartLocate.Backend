@@ -21,6 +21,8 @@ builder.Services.AddScoped<DataSeeder>();
 
 builder.Services.AddDaprClient();
 
+builder.Services.SetupDaprSidekick(builder.Configuration);
+
 builder.Services.AddControllers().AddDapr();
 
 builder.Services.AddSwaggerGen(x =>

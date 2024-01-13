@@ -22,6 +22,8 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddDaprClient();
 
+builder.Services.SetupDaprSidekick(builder.Configuration);
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 
 builder.Services.AddControllers().AddDapr();
