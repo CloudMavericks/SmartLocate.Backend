@@ -3,6 +3,11 @@
     <PropertyGroup>
         <TargetFramework>$(ProjectTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+        <WebPublishMethod>Container</WebPublishMethod>
+        <ContainerBaseImage>$(BaseImage)</ContainerBaseImage>
+        <ContainerRegistry>$(Registry)</ContainerRegistry>
+        <ContainerRepository>smartlocate/infrastructure</ContainerRepository>
     </PropertyGroup>
     
     <ItemGroup>        
@@ -13,9 +18,13 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\SmartLocate.Aspire\SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj" />
-      <ProjectReference Include="..\SmartLocate.Commons\SmartLocate.Commons.csproj" />
-      <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
+        <ProjectReference Include="..\SmartLocate.Aspire\SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\SmartLocate.Commons\SmartLocate.Commons.csproj" />
+        <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ContainerPort Include="7050" Type="tcp" />
     </ItemGroup>
 
 </Project>

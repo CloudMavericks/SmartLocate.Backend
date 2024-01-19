@@ -4,4 +4,8 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
     </PropertyGroup>
+    <PropertyGroup Label="Container Publish Props">
+        <BaseImage>mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled</BaseImage>
+        <Registry>hub.docker.maverick-apps.com</Registry>
+    </PropertyGroup>
 </Project>

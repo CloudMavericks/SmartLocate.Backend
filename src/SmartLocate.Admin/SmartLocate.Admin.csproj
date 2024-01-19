@@ -3,9 +3,11 @@
     <PropertyGroup>
         <TargetFramework>$(ProjectTargetFramework)</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled</ContainerBaseImage>
-        <ContainerRepository>smartlocate-admins</ContainerRepository>
-        <ContainerImageTag>latest</ContainerImageTag>
+        <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+        <WebPublishMethod>Container</WebPublishMethod>
+        <ContainerBaseImage>$(BaseImage)</ContainerBaseImage>
+        <ContainerRegistry>$(Registry)</ContainerRegistry>
+        <ContainerRepository>smartlocate/admins</ContainerRepository>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,5 +22,8 @@
         <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ContainerPort Include="7006" Type="tcp" />
+    </ItemGroup>
 
 </Project>
