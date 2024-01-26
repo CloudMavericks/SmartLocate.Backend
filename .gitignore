@@ -398,5 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/
 
+aspirate-secrets.json
+manifest.json
 
 appsettings.Development.json
