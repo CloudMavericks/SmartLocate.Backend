@@ -1,3 +1,4 @@
+using SmartLocate.Buses.Enums;
 using SmartLocate.Commons.Attributes;
 using SmartLocate.Infrastructure.Commons.Contracts;
 
@@ -11,4 +12,6 @@ public class Bus : IEntity
     public string VehicleNumber { get; set; }
     
     public string VehicleModel { get; set; }
+    
+    public VehicleStatus Status { get; set; }
 }

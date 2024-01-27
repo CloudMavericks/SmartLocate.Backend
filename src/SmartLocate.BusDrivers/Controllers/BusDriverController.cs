@@ -38,22 +38,39 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
     [ProducesResponseType(typeof(ResultSet<BusDriverResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
                                         int pageSize = 10,
+                                        string searchQuery = "",
                                         string orderBy = "Name",
                                         bool orderByDescending = false, 
                                         ActivationFilter activationFilter = 0)
     {
-        Expression<Func<BusDriver, bool>> filter = activationFilter switch
+        Expression<Func<BusDriver, bool>> filter;
+        if (string.IsNullOrWhiteSpace(searchQuery))
         {
-            ActivationFilter.ActivatedOnly => x => x.IsActivated,
-            ActivationFilter.NonActivatedOnly => x => !x.IsActivated,
-            _ => x => true 
-        };
+            filter = activationFilter switch
+            {
+                ActivationFilter.ActivatedOnly => x => x.IsActivated,
+                ActivationFilter.NonActivatedOnly => x => !x.IsActivated,
+                _ => x => true
+            };
+        }
+        else
+        {
+            filter = activationFilter switch
+            {
+                ActivationFilter.ActivatedOnly => x =>
+                    x.IsActivated && (x.Name.Contains(searchQuery) || x.PhoneNumber.Contains(searchQuery)),
+                ActivationFilter.NonActivatedOnly => x =>
+                    !x.IsActivated && (x.Name.Contains(searchQuery) || x.PhoneNumber.Contains(searchQuery)),
+                _ => x => x.Name.Contains(searchQuery) || x.PhoneNumber.Contains(searchQuery)
+            };
+        }
         Expression<Func<BusDriver, object>> orderByExpression = orderBy switch
         {
             "Name" => x => x.Name,
             "PhoneNumber" => x => x.PhoneNumber,
             _ => x => x.Name
         };
+        
         var skip = (page - 1) * pageSize;
         var busDrivers = await mongoRepository.GetAllAsync(filter, skip, pageSize, orderByExpression, orderByDescending);
         var totalCount = await mongoRepository.CountAsync(filter);
@@ -118,7 +135,6 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
     }
 
     [AllowAnonymous]
-
     [HttpGet("{id:guid}/activation-status")]
     [ProducesResponseType(typeof(ActivationStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -139,7 +155,7 @@ public class BusDriverController(IMongoRepository<BusDriver> mongoRepository) : 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Activate(BusDriverActivateRequest request)
+    public async Task<IActionResult> Activate([FromBody] BusDriverActivateRequest request)
     {
         var busDriver = await mongoRepository.GetAsync(request.BusDriverId);
         if (busDriver == null)

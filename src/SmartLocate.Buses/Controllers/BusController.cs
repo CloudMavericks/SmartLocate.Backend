@@ -24,13 +24,17 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
         {
             return NotFound();
         }
-        var busResponse = new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel);
+        var busResponse = new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel, bus.Status);
         return Ok(busResponse);
     }
     
     [HttpGet]
     [ProducesResponseType(typeof(ResultSet<BusResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get(int page = 1, int pageSize = 10, string orderBy = "Id", bool orderByDescending = false)
+    public async Task<IActionResult> Get(int page = 1, 
+                                        int pageSize = 10,
+                                        string searchQuery = "",
+                                        string orderBy = "Id", 
+                                        bool orderByDescending = false)
     {
         Expression<Func<Bus, object>> orderByExpression = orderBy switch
         {
@@ -38,10 +42,13 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
             "VehicleModel" => x => x.VehicleModel,
             _ => x => x.Id
         };
+        Expression<Func<Bus, bool>> filter = string.IsNullOrWhiteSpace(searchQuery) 
+            ? x => true 
+            : x => x.VehicleNumber.Contains(searchQuery) || x.VehicleModel.Contains(searchQuery);
         var skip = (page - 1) * pageSize;
-        var buses = await mongoRepository.GetAllAsync(skip, pageSize, orderByExpression, orderByDescending);
+        var buses = await mongoRepository.GetAllAsync(filter, skip, pageSize, orderByExpression, orderByDescending);
         var totalCount = await mongoRepository.CountAsync();
-        var busResponses = buses.Select(bus => new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel)).ToList();
+        var busResponses = buses.Select(bus => new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel, bus.Status)).ToList();
         return Ok(new ResultSet<BusResponse>(busResponses, totalCount));
     }
     
@@ -52,10 +59,11 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
         var bus = new Bus
         {
             VehicleNumber = busRequest.VehicleNumber,
-            VehicleModel = busRequest.VehicleModel
+            VehicleModel = busRequest.VehicleModel,
+            Status = busRequest.Status
         };
         await mongoRepository.CreateAsync(bus);
-        var response = new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel);
+        var response = new BusResponse(bus.Id, bus.VehicleNumber, bus.VehicleModel, bus.Status);
         return CreatedAtAction(nameof(Get), new { id = bus.Id }, response);
     }
     
@@ -76,6 +84,7 @@ public class BusController(IMongoRepository<Bus> mongoRepository) : ControllerBa
         }
         bus.VehicleNumber = busRequest.VehicleNumber;
         bus.VehicleModel = busRequest.VehicleModel;
+        bus.Status = busRequest.Status;
         await mongoRepository.UpdateAsync(bus);
         return NoContent();
     }

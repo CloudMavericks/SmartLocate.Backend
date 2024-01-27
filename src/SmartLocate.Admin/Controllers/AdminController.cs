@@ -35,6 +35,7 @@ public class AdminController(IMongoRepository<AdminUser> mongoRepository, ICurre
     [ProducesResponseType(typeof(ResultSet<AdminUserResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get(int page = 1,
                                         int pageSize = 10,
+                                        string searchQuery = "",
                                         string orderBy = "Name",
                                         bool orderByDescending = false)
     {
@@ -45,8 +46,11 @@ public class AdminController(IMongoRepository<AdminUser> mongoRepository, ICurre
             "PhoneNumber" => x => x.PhoneNumber,
             _ => x => x.Name
         };
+        Expression<Func<AdminUser, bool>> filter = string.IsNullOrWhiteSpace(searchQuery) 
+            ? x => true 
+            : x => x.Name.Contains(searchQuery) || x.Email.Contains(searchQuery) || x.PhoneNumber.Contains(searchQuery);
         var skip = (page - 1) * pageSize;
-        var adminUsers = await mongoRepository.GetAllAsync(skip, pageSize, orderByExpression, orderByDescending);
+        var adminUsers = await mongoRepository.GetAllAsync(filter, skip, pageSize, orderByExpression, orderByDescending);
         var totalCount = await mongoRepository.CountAsync();
         var adminUserResponses = adminUsers
             .Select(x => new AdminUserResponse(x.Id, x.Name, x.Email, x.PhoneNumber, x.IsSuperAdmin)).ToList();
