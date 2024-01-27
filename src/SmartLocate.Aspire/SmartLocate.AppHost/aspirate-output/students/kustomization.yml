@@ -1,0 +1,21 @@
+resources:
+- deployment.yml
+- service.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: students-env
+  literals:
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES=true
+    - OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES=true
+    - JWT_SECRET=THIS IS BRUCE WAYNE'S HIGHLY CLASSIFIED SECRET FOR BATMAN'S IDENTITY
+    - services__busroutes__0=http://busroutes:8080
+    - services__busroutes__1=https://busroutes:8443
+    - ASPNETCORE_URLS=http://+:8080
+
+secretGenerator:
+- name: students-secrets
+  envs:
+  - .students.secrets

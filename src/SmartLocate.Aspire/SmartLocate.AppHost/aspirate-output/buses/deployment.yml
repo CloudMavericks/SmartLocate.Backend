@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buses
+  annotations:
+    dapr.io/enabled: true
+    dapr.io/config: tracing
+    dapr.io/app-id: buses
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: buses
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: buses
+    spec:
+      containers:
+      - name: buses
+        image: hub.docker.maverick-apps.com/smartlocate/buses:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        - containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: buses-env
+        - secretRef:
+            name: buses-secrets
+      imagePullSecrets:
+        - name: maverick-apps-registry
+      terminationGracePeriodSeconds: 180

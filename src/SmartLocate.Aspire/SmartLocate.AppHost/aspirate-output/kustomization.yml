@@ -1,0 +1,14 @@
+resources:
+- api
+- buses
+- busroutes
+- students
+- identity
+- busdrivers
+- adminusers
+- infrastructure
+- dapr\pubsub.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+

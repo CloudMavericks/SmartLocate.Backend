@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infrastructure
+  annotations:
+    dapr.io/enabled: true
+    dapr.io/config: tracing
+    dapr.io/app-id: infrastructure
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infrastructure
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: infrastructure
+    spec:
+      containers:
+      - name: infrastructure
+        image: hub.docker.maverick-apps.com/smartlocate/infrastructure:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        - containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: infrastructure-env
+      imagePullSecrets:
+        - name: maverick-apps-registry
+      terminationGracePeriodSeconds: 180
