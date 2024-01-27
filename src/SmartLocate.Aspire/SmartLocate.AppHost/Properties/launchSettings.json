@@ -11,7 +11,8 @@
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:16186",
         "DcpPublisher__CliPath": "C:\\Program Files\\dotnet\\packs\\Aspire.Hosting.Orchestration.win-x64\\8.0.0-preview.2.23619.3\\tools\\dcp.exe",
-        "JWT_SECRET":"THIS IS BRUCE WAYNE'S HIGHLY CLASSIFIED SECRET FOR BATMAN'S IDENTITY"
+        "JWT_SECRET":"THIS IS BRUCE WAYNE'S HIGHLY CLASSIFIED SECRET FOR BATMAN'S IDENTITY",
+        "ConnectionStrings__MongoDbConnection": "mongodb://localhost:27017/SmartLocate"
       }
     }
   }

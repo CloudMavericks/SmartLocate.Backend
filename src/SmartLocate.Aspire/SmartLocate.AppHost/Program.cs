@@ -3,6 +3,7 @@ using SmartLocate.Commons.Constants;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+var mongoDbConnection = Environment.GetEnvironmentVariable("ConnectionStrings__MongoDbConnection");
 
 var daprPubSub = builder.AddDaprPubSub(SmartLocateComponents.PubSub);
 
@@ -26,26 +27,31 @@ api.WithEnvironment("JWT_SECRET", jwtSecret);
 
 buses
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 busRoutes
     .WithReference(students)
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 students
     .WithReference(busRoutes)
     .WithReference(daprPubSub)
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 busDrivers
     .WithReference(daprPubSub)
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 adminUsers
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 identity
@@ -54,6 +60,7 @@ identity
     .WithReference(adminUsers)
     .WithReference(daprPubSub)
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 infrastructure
