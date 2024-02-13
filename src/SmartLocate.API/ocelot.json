@@ -211,6 +211,19 @@
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       }
+    }, {
+      "UpstreamPathTemplate": "/search/{everything}",
+      "UpstreamHttpMethod": ["GET"],
+      "DownstreamPathTemplate": "/api/search/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": 7007
+      }],
+      "SwaggerKey": "Search",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     }
   ],
   "GlobalConfiguration": {
@@ -258,6 +271,13 @@
         "Name": "Admin API",
         "Version": "v1",
         "Url": "http://localhost:7006/swagger/v1/swagger.json"
+      }]
+    }, {
+      "Key": "Search",
+      "Config": [{
+        "Name": "Search API",
+        "Version": "v1",
+        "Url": "http://localhost:7007/swagger/v1/swagger.json"
       }]
     }
   ]

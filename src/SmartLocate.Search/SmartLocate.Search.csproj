@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+        <WebPublishMethod>Container</WebPublishMethod>
+        <ContainerBaseImage>$(BaseImage)</ContainerBaseImage>
+        <ContainerRegistry>$(Registry)</ContainerRegistry>
+        <ContainerRepository>smartlocate/search</ContainerRepository>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.MongoDB.Driver" />
+        <PackageReference Include="Dapr.Client" />
+        <PackageReference Include="Dapr.AspNetCore" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SmartLocate.Aspire\SmartLocate.ServiceDefaults\SmartLocate.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\SmartLocate.BusRoutes\SmartLocate.BusRoutes.csproj" />
+        <ProjectReference Include="..\SmartLocate.Infrastructure.Commons\SmartLocate.Infrastructure.Commons.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ContainerPort Include="7007" Type="tcp" />
+    </ItemGroup>
+
+</Project>
