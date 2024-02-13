@@ -26,7 +26,7 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         {
             return NotFound();
         }
-        var busRouteResponse = new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.StartLocation, busRoute.RoutePoints);
+        var busRouteResponse = new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.RouteName, busRoute.StartLocation, busRoute.RoutePoints);
         return Ok(busRouteResponse);
     }
     
@@ -47,7 +47,7 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         var skip = (page - 1) * pageSize;
         var busRoutes = await mongoRepository.GetAllAsync(filterExpression, skip, pageSize, orderByExpression, orderByDescending);
         var totalCount = await mongoRepository.CountAsync();
-        var busRouteResponses = busRoutes.Select(busRoute => new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.StartLocation, busRoute.RoutePoints)).ToList();
+        var busRouteResponses = busRoutes.Select(busRoute => new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.RouteName, busRoute.StartLocation, busRoute.RoutePoints)).ToList();
         return Ok(new ResultSet<BusRouteResponse>(busRouteResponses, totalCount));
     }
     
@@ -58,11 +58,12 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         var busRoute = new BusRoute
         {
             RouteNumber = busRouteRequest.RouteNumber,
+            RouteName = busRouteRequest.RouteName,
             StartLocation = busRouteRequest.StartLocation,
             RoutePoints = busRouteRequest.RoutePoints
         };
         await mongoRepository.CreateAsync(busRoute);
-        var response = new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.StartLocation, busRoute.RoutePoints);
+        var response = new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.RouteName, busRoute.StartLocation, busRoute.RoutePoints);
         return CreatedAtAction(nameof(Get), new { id = busRoute.Id }, response);
     }
     
@@ -76,12 +77,17 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         {
             return BadRequest();
         }
+        if (await mongoRepository.AnyAsync(x => x.RouteNumber == busRouteRequest.RouteNumber && x.Id != id))
+        {
+            return BadRequest("Route Number already exists.");
+        }
         var busRoute = await mongoRepository.GetAsync(id);
         if (busRoute == null)
         {
             return NotFound();
         }
         busRoute.RouteNumber = busRouteRequest.RouteNumber;
+        busRoute.RouteName = busRouteRequest.RouteName;
         busRoute.StartLocation = busRouteRequest.StartLocation;
         busRoute.RoutePoints = busRouteRequest.RoutePoints;
         await mongoRepository.UpdateAsync(busRoute);
