@@ -84,4 +84,14 @@ public class MongoRepository<T>(IMongoDatabase mongoDatabase, string collectionN
     {
         return _collection.CountDocumentsAsync(filter);
     }
+
+    public async Task<bool> AnyAsync()
+    {
+        return await _collection.CountDocumentsAsync(x => true) > 0;
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _collection.CountDocumentsAsync(filter) > 0;
+    }
 }

@@ -25,4 +25,8 @@ public interface IMongoRepository<T> where T : class
     Task<long> CountAsync();
     
     Task<long> CountAsync(Expression<Func<T, bool>> filter);
+
+    Task<bool> AnyAsync();
+    
+    Task<bool> AnyAsync(Expression<Func<T, bool>> filter);
 }
