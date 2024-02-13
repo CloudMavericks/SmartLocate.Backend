@@ -269,4 +269,13 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         var response = new LoginResponse(true, student.Id, student.Name, student.Email, student.PhoneNumber);
         return Ok(response);
     }
+    
+    [AllowAnonymous]
+    [HttpGet("count")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCount(Guid busRouteId)
+    {
+        var count = await mongoRepository.CountAsync(x => x.DefaultBusRouteId == busRouteId);
+        return Ok(count);
+    }
 }

@@ -106,9 +106,9 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         }
         try
         {
-            var students = await daprClient.InvokeMethodAsync<List<dynamic>>(HttpMethod.Get, SmartLocateServices.Students,
-                $"api/students?defaultBusRouteId={id}");
-            if (students.Count != 0)
+            var students = await daprClient.InvokeMethodAsync<int>(HttpMethod.Get, SmartLocateServices.Students,
+                $"api/students/count?busRouteId={id}");
+            if (students > 0)
             {
                 return BadRequest("There are one or more students assigned to this bus route.");
             }
