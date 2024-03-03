@@ -8,6 +8,11 @@ on:
         required: true        
         default: 'API'
         options: [ 'API', 'Buses', 'BusRoutes', 'Students', 'Identity', 'BusDrivers', 'Admin', 'Infrastructure', 'Search' ]
+      image_name:
+        description: 'Docker Image name'
+        required: true
+        default: 'api'
+        options: [ 'api', 'buses', 'bus-routes', 'students', 'identity', 'bus-drivers', 'admins', 'infrastructure', 'search' ]
 
 jobs:
   build:
@@ -15,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       SERVICE: ${{ github.event.inputs.service }}
+      DOCKER_IMAGE: ${{ github.event.inputs.image_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -33,9 +39,8 @@ jobs:
       - name: Build
         run: dotnet build src/SmartLocate.${{ env.SERVICE }}/SmartLocate.${{ env.SERVICE }}.csproj --configuration Release --no-restore
 
-      - name: Publish
+      - name: Publish to Local Docker daemon
         run: dotnet publish src/SmartLocate.${{ env.SERVICE }}/SmartLocate.${{ env.SERVICE }}.csproj --configuration Release --no-build --no-restore /t:PublishContainer
-        env:
-          SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD: true
-          SDK_CONTAINER_REGISTRY_PARALLEL_UPLOAD: true
-          SDK_CONTAINER_REGISTRY_CHUNKED_UPLOAD_SIZE_BYTES: 131072
+
+      - name: Tag Docker image
+        run: docker tag smartlocate/${{ env.DOCKER_IMAGE }} ghcr.io/${{ github.actor }}/smartlocate-${{ env.DOCKER_IMAGE }}:${{ github.sha }}

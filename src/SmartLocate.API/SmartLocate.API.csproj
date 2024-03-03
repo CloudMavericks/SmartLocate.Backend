@@ -6,7 +6,6 @@
         <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
         <WebPublishMethod>Container</WebPublishMethod>
         <ContainerBaseImage>$(BaseImage)</ContainerBaseImage>
-        <ContainerRegistry>$(Registry)</ContainerRegistry>
         <ContainerRepository>smartlocate/api</ContainerRepository>
     </PropertyGroup>
     
