@@ -7,7 +7,7 @@ on:
         description: 'Service to build and push'
         required: true        
         default: 'API'
-        options: [ 'API', 'Buses', 'BusRoutes', 'Students', 'Identity', 'BusDrivers', 'Admin', 'Infrastructure' ]
+        options: [ 'API', 'Buses', 'BusRoutes', 'Students', 'Identity', 'BusDrivers', 'Admin', 'Infrastructure', 'Search' ]
 
 jobs:
   build:
