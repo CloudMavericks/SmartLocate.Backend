@@ -43,7 +43,7 @@ jobs:
         run: dotnet publish src/SmartLocate.${{ env.SERVICE }}/SmartLocate.${{ env.SERVICE }}.csproj --configuration Release --no-build --no-restore /t:PublishContainer
 
       - name: Setup Image Repository name
-        run: echo ::set-env name=IMAGE_REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        run: echo "name=IMAGE_REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Tag Docker image
         run: docker tag smartlocate/${{ env.DOCKER_IMAGE }} ghcr.io/${{ env.IMAGE_REPOSITORY }}/smartlocate-${{ env.DOCKER_IMAGE }}:${{ github.sha }}
