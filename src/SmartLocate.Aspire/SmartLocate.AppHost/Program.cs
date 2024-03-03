@@ -23,6 +23,8 @@ var adminUsers = builder.AddProject<Projects.SmartLocate_Admin>(SmartLocateServi
 
 var infrastructure = builder.AddProject<Projects.SmartLocate_Infrastructure>(SmartLocateServices.Infrastructure);
 
+var search = builder.AddProject<Projects.SmartLocate_Search>(SmartLocateServices.Search);
+
 api.WithEnvironment("JWT_SECRET", jwtSecret);
 
 buses
@@ -66,6 +68,11 @@ identity
 infrastructure
     .WithReference(daprPubSub)
     .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithDaprSidecar();
+
+search
+    .WithEnvironment("JWT_SECRET", jwtSecret)
+    .WithEnvironment("ConnectionStrings__MongoDbConnection", mongoDbConnection)
     .WithDaprSidecar();
 
 await builder.Build().RunAsync();

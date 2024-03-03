@@ -14,14 +14,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\SmartLocate.Admin\SmartLocate.Admin.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.API\SmartLocate.API.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.BusDrivers\SmartLocate.BusDrivers.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.Buses\SmartLocate.Buses.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.BusRoutes\SmartLocate.BusRoutes.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.Identity\SmartLocate.Identity.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.Infrastructure\SmartLocate.Infrastructure.csproj" />
-      <ProjectReference Include="..\..\SmartLocate.Students\SmartLocate.Students.csproj" />
+      <ProjectReference Include="..\..\SmartLocate.Admin\SmartLocate.Admin.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.API\SmartLocate.API.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.BusDrivers\SmartLocate.BusDrivers.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.Buses\SmartLocate.Buses.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.BusRoutes\SmartLocate.BusRoutes.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.Identity\SmartLocate.Identity.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.Infrastructure\SmartLocate.Infrastructure.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.Search\SmartLocate.Search.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\..\SmartLocate.Students\SmartLocate.Students.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 
 </Project>

@@ -15,6 +15,8 @@ public static class SmartLocateServices
     public const string BusDrivers = "busdrivers";
     
     public const string AdminUsers = "adminusers";
+
+    public const string Search = "search";
     
     public const string Infrastructure = "infrastructure";
 }
