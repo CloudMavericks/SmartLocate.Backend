@@ -5,6 +5,8 @@ using SmartLocate.Infrastructure.Commons.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(action => action.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 builder.AddServiceDefaults();
 
 builder.Services.AddProblemDetails();
@@ -24,6 +26,8 @@ builder.Services.AddSwaggerForOcelot(builder.Configuration,
     x => x.AddAuthenticationProviderKeyMapping(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme));
 
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
