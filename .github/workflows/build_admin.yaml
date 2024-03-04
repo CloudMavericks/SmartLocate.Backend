@@ -33,12 +33,12 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          docker tag smartlocate/admin ghcr.io/${{ env.IMAGE_REPOSITORY }}/admin:${{ github.sha }}
-          docker tag smartlocate/admin ghcr.io/${{ env.IMAGE_REPOSITORY }}/admin:latest
+          docker tag smartlocate/admins ghcr.io/${{ env.IMAGE_REPOSITORY }}/admins:${{ github.sha }}
+          docker tag smartlocate/admins ghcr.io/${{ env.IMAGE_REPOSITORY }}/admins:latest
 
       - name: Push to GitHub Container Registry
         run: |
-          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/admin:${{ github.sha }}
-          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/admin:latest
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/admins:${{ github.sha }}
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/admins:latest
 
       
