@@ -1,0 +1,44 @@
+name: API Service
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Docker Login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ghcr.io
+
+      - name: Restore
+        run: dotnet restore src/SmartLocate.API/SmartLocate.API.csproj
+
+      - name: Build
+        run: dotnet build src/SmartLocate.API/SmartLocate.API.csproj --configuration Release --no-restore
+
+      - name: Publish to Local Docker daemon
+        run: dotnet publish src/SmartLocate.API/SmartLocate.API.csproj --configuration Release --no-build --no-restore /t:PublishContainer
+
+      - name: Setup Image Repository name
+        run: echo "IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Tag Docker image
+        run: |
+          docker tag smartlocate/api ghcr.io/${{ env.IMAGE_REPOSITORY }}/api:${{ github.sha }}
+          docker tag smartlocate/api ghcr.io/${{ env.IMAGE_REPOSITORY }}/api:latest
+
+      - name: Push to GitHub Container Registry
+        run: |
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/api:${{ github.sha }}
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/api:latest
+
+      

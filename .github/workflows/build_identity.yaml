@@ -1,0 +1,44 @@
+name: Identity Service
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Docker Login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ghcr.io
+
+      - name: Restore
+        run: dotnet restore src/SmartLocate.Identity/SmartLocate.Identity.csproj
+
+      - name: Build
+        run: dotnet build src/SmartLocate.Identity/SmartLocate.Identity.csproj --configuration Release --no-restore
+
+      - name: Publish to Local Docker daemon
+        run: dotnet publish src/SmartLocate.Identity/SmartLocate.Identity.csproj --configuration Release --no-build --no-restore /t:PublishContainer
+
+      - name: Setup Image Repository name
+        run: echo "IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Tag Docker image
+        run: |
+          docker tag smartlocate/identity ghcr.io/${{ env.IMAGE_REPOSITORY }}/identity:${{ github.sha }}
+          docker tag smartlocate/identity ghcr.io/${{ env.IMAGE_REPOSITORY }}/identity:latest
+
+      - name: Push to GitHub Container Registry
+        run: |
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/identity:${{ github.sha }}
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/identity:latest
+
+      
