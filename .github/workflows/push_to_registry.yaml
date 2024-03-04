@@ -46,9 +46,13 @@ jobs:
         run: echo "IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Tag Docker image
-        run: docker tag smartlocate/${{ env.DOCKER_IMAGE }} ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+        run: |
+          docker tag smartlocate/${{ env.DOCKER_IMAGE }} ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          docker tag smartlocate/${{ env.DOCKER_IMAGE }} ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest
 
       - name: Push to GitHub Container Registry
-        run: docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+        run: |
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest
 
       
