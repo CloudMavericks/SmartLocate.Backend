@@ -16,8 +16,6 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddDaprClient();
 
-builder.Services.SetupDaprSidekick(builder.Configuration);
-
 builder.Services.AddControllers().AddDapr();
 
 builder.Services.AddSwaggerGen(x =>

@@ -73,10 +73,4 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<ICurrentUserService, CurrentUserService>();
         return services;
     }
-
-    public static IServiceCollection SetupDaprSidekick(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDaprSidekick(configuration);
-        return services;
-    }
 }
