@@ -114,7 +114,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         try
         {
             var busRouteRequest = daprClient.CreateInvokeMethodRequest(HttpMethod.Get, SmartLocateServices.BusRoutes,
-                $"api/bus-routes/{studentRequest.DefaultBusRouteId}");
+                $"api/bus-routes/{studentRequest.DefaultBusRouteId}/details");
             var busRoute = await daprClient.InvokeMethodAsync<BusRouteResponse>(busRouteRequest);
             student.DefaultBusRouteNumber = busRoute.RouteNumber;
         }
@@ -167,7 +167,7 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         try
         {
             var busRoute = await daprClient.InvokeMethodAsync<BusRouteResponse>(HttpMethod.Get, SmartLocateServices.BusRoutes,
-                $"api/bus-routes/{studentRequest.DefaultBusRouteId}");
+                $"api/bus-routes/{studentRequest.DefaultBusRouteId}/details");
             if (busRoute == null)
             {
                 return BadRequest("Invalid Bus Route Selected");

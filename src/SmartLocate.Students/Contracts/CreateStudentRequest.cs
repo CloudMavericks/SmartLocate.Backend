@@ -12,7 +12,7 @@ public class CreateStudentRequest
     
     public string Address { get; set; }
     
-    public Point DefaultPickupDropOffLocation { get; set; }
+    public Point? DefaultPickupDropOffLocation { get; set; }
     
     public Guid DefaultBusRouteId { get; set; }
 }

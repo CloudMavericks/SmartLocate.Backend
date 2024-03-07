@@ -19,7 +19,7 @@ public class Student : IEntity
     
     public string PasswordHash { get; set; }
     
-    public Point DefaultPickupDropOffLocation { get; set; }
+    public Point? DefaultPickupDropOffLocation { get; set; }
     
     public Guid DefaultBusRouteId { get; set; }
     public int DefaultBusRouteNumber { get; set; }

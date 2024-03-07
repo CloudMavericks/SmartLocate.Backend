@@ -41,17 +41,19 @@ public static class ServiceCollectionExtensions
         jwtSecret ??= configuration["JwtSettings:Secret"] ?? string.Empty;
         if(string.IsNullOrEmpty(jwtSecret) && configuration == null)
             throw new Exception("JWT_SECRET environment variable is not set");
-        services.AddAuthentication()
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
             {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
-                    RoleClaimType = SmartLocateClaimTypes.Type
+                    RoleClaimType = SmartLocateClaimTypes.Type,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
         services.AddAuthorizationBuilder()

@@ -128,4 +128,19 @@ public class BusRouteController(IMongoRepository<BusRoute> mongoRepository, Dapr
         await mongoRepository.RemoveAsync(id);
         return NoContent();
     }
+
+    [AllowAnonymous]
+    [HttpGet("{id:guid}/details")]
+    [ProducesResponseType(typeof(BusRouteResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDetails(Guid id)
+    {
+        var busRoute = await mongoRepository.GetAsync(id);
+        if (busRoute == null)
+        {
+            return NotFound();
+        }
+        var busRouteResponse = new BusRouteResponse(busRoute.Id, busRoute.RouteNumber, busRoute.RouteName, busRoute.StartLocation, busRoute.RoutePoints);
+        return Ok(busRouteResponse);
+    }
 }
