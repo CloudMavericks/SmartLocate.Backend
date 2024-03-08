@@ -278,4 +278,22 @@ public class StudentController(IMongoRepository<Student> mongoRepository, DaprCl
         var count = await mongoRepository.CountAsync(x => x.DefaultBusRouteId == busRouteId);
         return Ok(count);
     }
+
+    [AllowAnonymous]
+    [HttpGet("{id:guid}/details")]
+    [ProducesResponseType(typeof(StudentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDetails(Guid id)
+    {
+        var student = await mongoRepository.GetAsync(id);
+        if (student == null)
+        {
+            return NotFound();
+        }
+
+        var studentResponse = new StudentResponse(student.Id, student.Name, student.Email, student.PhoneNumber,
+            student.Address, student.DefaultPickupDropOffLocation, student.DefaultBusRouteId,
+            student.DefaultBusRouteNumber, student.IsActivated);
+        return Ok(studentResponse);
+    }
 }

@@ -26,7 +26,7 @@ public class StudentController(IMongoRepository<StudentActivationCode> activatio
     public async Task<IActionResult> RequestActivation(StudentInvokeActivationRequest request)
     {
         var student = await daprClient.InvokeMethodAsync<StudentResponse>(HttpMethod.Get, SmartLocateServices.Students,
-            $"api/students/{request.StudentId}");
+            $"api/students/{request.StudentId}/details");
         if (student == null)
         {
             return NotFound("Student Not Found");
